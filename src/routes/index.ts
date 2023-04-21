@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { categoryRoutes } from "../domains/category/category.routes";
 
 export class ApplicationRouter {
     private baseUrl = process.env.BASE_URL || "/api/v1";
@@ -9,7 +10,7 @@ export class ApplicationRouter {
     }
 
     public getRoutes(): Router {
-        // this.router.use(`${this.baseUrl}/Users`, usersRoutes);
+        this.router.use(`${this.baseUrl}/Categories`, categoryRoutes);
         return this.router;
     }
 }

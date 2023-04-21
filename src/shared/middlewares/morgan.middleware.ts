@@ -16,9 +16,9 @@ class MorganMiddlewareConfig {
         return env !== "development";
     }
 
-    getMiddlewarehandler() {
+    getMiddlewareHandler() {
         return morgan(":method :url :status :res[content-length] - :response-time ms", { stream: this.stream, skip: this.skip });
     }
 }
 
-export const morganMiddleware = new MorganMiddlewareConfig().getMiddlewarehandler();
+export const morganMiddleware = new MorganMiddlewareConfig().getMiddlewareHandler();
