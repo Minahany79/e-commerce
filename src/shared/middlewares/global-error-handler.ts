@@ -1,21 +1,22 @@
 import { NextFunction, Response, Request } from "express";
-import { logger } from "../services/logger.service";
+import { ResponseHandlingService } from "../services/response-handling.service";
+import { StatusCodes } from "../enums/status-codes";
+import { ErrorResponse } from "../models/error-response";
 
 export const globalErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  process.on("unhandledRejection", (reason, promise) => {
-    if (res.headersSent) {
+  process.on("unhandledRejection", (reason: Error, promise) => {
+    if (res.headersSent)
       return;
-    } else {
-      logger.error(
-        `🎃🎃 UnHandledRejection on ${promise} because ${reason} 🎃🎃`
+    else {
+      return new ResponseHandlingService(
+        res,
+        new ErrorResponse(reason.message, StatusCodes.InternalServerError, reason),
+        StatusCodes.InternalServerError,
       );
-      return res.status(500).json({
-        message: `${reason}`,
-      });
     }
   });
 
