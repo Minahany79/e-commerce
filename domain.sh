@@ -12,6 +12,17 @@ path_folder_name=src/domains/$FOLDER_NAME
 CLASS_NAME="$(tr '[:lower:]' '[:upper:]' <<<${FOLDER_NAME:0:1})${FOLDER_NAME:1}"
 
 ########################################################################################
+# Create the interface.ts file and add code to it
+INTERFACE_FILE="$path_folder_name/models/$FOLDER_NAME.interface.ts"
+touch $INTERFACE_FILE
+
+echo "export interface I${CLASS_NAME} {
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+" >>$INTERFACE_FILE
+
+########################################################################################
 # Create the routes.ts file and add code to it
 ROUTES_FILE="$path_folder_name/$FOLDER_NAME.routes.ts"
 
@@ -42,47 +53,50 @@ class ${CLASS_NAME}Router implements IRouterBase<${CLASS_NAME}Controller>  {
 }
 
 export const ${FOLDER_NAME}Routes: Router = new ${CLASS_NAME}Router().getRouter();" >>$ROUTES_FILE
+###################################################################################################
+# Create the model.ts file and add code to it
+MODEL_FILE="$path_folder_name/$FOLDER_NAME.model.ts"
+touch $MODEL_FILE
 
-# Create the entity.ts file and add code to it
-ENTITY_FILE="$path_folder_name/$FOLDER_NAME.entity.ts"
-touch $ENTITY_FILE
+echo "import { Model, Schema, model } from 'mongoose';
+import { I${CLASS_NAME} } from './models/${FOLDER_NAME}.interface';
 
-echo "import { Entity, Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+class ${CLASS_NAME}<T extends I${CLASS_NAME}> {
+    public readonly ${FOLDER_NAME}Model: Model<T>;
 
-@Entity('${FOLDER_NAME}')
-export class ${CLASS_NAME} {
-  @PrimaryGeneratedColumn()
-  id!: number;
+    constructor() {
+        const schema = new Schema<T>({
+           
+        }, {
+            timestamps: true
+        });
 
-  @Column()
-  @CreateDateColumn()
-  creationDate!: Date;
-
-  @Column()
-  @UpdateDateColumn()
-  modificationDate!: Date;
+        this.${FOLDER_NAME}Model = model<T>('${CLASS_NAME}', schema);
+    }
 }
-" >>$ENTITY_FILE
+export const ${CLASS_NAME}Model = new ${CLASS_NAME}().${FOLDER_NAME}Model;
+" >>$MODEL_FILE
 
 ########################################################################################
 # Create the service.ts file and add code to it
 SERVICE_FILE="$path_folder_name/$FOLDER_NAME.service.ts"
 touch $SERVICE_FILE
 
-echo "import { IGenericRepository } from '../../shared/repository/abstractions/generic-repository';
-import { GenericRepository } from '../../shared/repository/implementations/generic-repository';
-import { $CLASS_NAME } from './${FOLDER_NAME}.entity';
+echo "import { Model } from 'mongoose';
+import { ${CLASS_NAME}Model } from './${FOLDER_NAME}.model';
+import { I${CLASS_NAME} } from './models/${FOLDER_NAME}.interface';
 
 
 export class ${CLASS_NAME}Service {
-    private readonly ${FOLDER_NAME}Repository: IGenericRepository<${CLASS_NAME}>;
+    private readonly ${FOLDER_NAME}Model: Model<I${CLASS_NAME}>;
 
     constructor() {
-        this.${FOLDER_NAME}Repository = new GenericRepository(${CLASS_NAME});
+        this.${FOLDER_NAME}Model = ${CLASS_NAME}Model;
     }
 
 }" >>$SERVICE_FILE
 ########################################################################################
+# Create the controller.ts file and add code to it
 CONTROLLER_FILE="$path_folder_name/$FOLDER_NAME.controller.ts"
 touch $CONTROLLER_FILE
 
