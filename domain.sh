@@ -27,7 +27,7 @@ echo "export interface I${CLASS_NAME} {
 ROUTES_FILE="$path_folder_name/$FOLDER_NAME.routes.ts"
 
 touch $ROUTES_FILE
-echo "import { Router } from 'express';
+echo "import { Router, Request, Response } from 'express';
 import { IRouterBase } from '../../shared/abstractions/router-base';
 import { ${CLASS_NAME}Controller } from './${FOLDER_NAME}.controller';
 
@@ -100,7 +100,8 @@ export class ${CLASS_NAME}Service {
 CONTROLLER_FILE="$path_folder_name/$FOLDER_NAME.controller.ts"
 touch $CONTROLLER_FILE
 
-echo "import { ${CLASS_NAME}Service } from './${FOLDER_NAME}.service';
+echo "import { Request, Response } from 'express'
+import { ${CLASS_NAME}Service } from './${FOLDER_NAME}.service';
 
 export class ${CLASS_NAME}Controller {
     private readonly ${FOLDER_NAME}Service: ${CLASS_NAME}Service;
