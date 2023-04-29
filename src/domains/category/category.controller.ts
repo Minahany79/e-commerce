@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import { CategoryService } from './category.service';
-import { ICategory } from './models/category.interface';
 import { ResponseHandlingService } from '../../shared/services/response-handling.service';
 import { ErrorResponse } from '../../shared/models/error-response';
 import { StatusCodes } from '../../shared/enums/status-codes';
 import { MessageResponse } from '../../shared/models/message-response';
 
 export class CategoryController {
-    private readonly categoryService: CategoryService<ICategory>;
+    private readonly categoryService: CategoryService;
 
     constructor() {
         this.categoryService = new CategoryService();

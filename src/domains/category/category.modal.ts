@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
+import { Model, Schema, model } from "mongoose";
 import { ICategory } from "./models/category.interface";
 
 
 class Category<T extends ICategory> {
-    public readonly CategoryModel: any;
+    public readonly categoryModel: Model<T>;
 
     constructor() {
         const schema = new Schema<T>({
@@ -19,8 +19,8 @@ class Category<T extends ICategory> {
             timestamps: true
         });
 
-        this.CategoryModel = model<T>('Category', schema);
+        this.categoryModel = model<T>('Category', schema);
     }
 }
-export const CategoryModel = new Category().CategoryModel;
+export const CategoryModel = new Category().categoryModel;
 
